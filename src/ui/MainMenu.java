@@ -3,41 +3,27 @@
  */
 package ui;
 
-import arduino.PortDropdownMenu;
-import java.awt.event.ActionListener;
 import arduino.*;
 import com.fazecast.jSerialComm.SerialPort;
-import com.fazecast.jSerialComm.SerialPortDataListener;
-import com.fazecast.jSerialComm.SerialPortEvent;
+import communication.GraphWorker;
 import graph.TimeGraph;
-import org.jfree.data.xy.XYSeries;
+import javax.swing.ImageIcon;
 /**
  *
  * @author dinob
  */
 public class MainMenu extends javax.swing.JFrame {
 
-    PortDropdownMenu p = new PortDropdownMenu();
-    Arduino myArduino;
-    int actionCounter = 0;
-    TimeGraph graph;
+    private Arduino myArduino;
+    private SerialPort comPort;    
+    private final TimeGraph graph;
     /**
      * Creates new form MainMenu
      */
-    public MainMenu() {
-        p.refreshMenu();
-        this.add(p);
-        this.pack();
-        this.setVisible(true);
+    public MainMenu() { 
         initComponents();
-        p.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                pActionPerformed(evt);
-            }
-        });
         graph = new TimeGraph("Time Plot");
-        jPanel1.add(graph.getGraphPanel());
+        graphPanel.add(graph.getGraphPanel());
     }
 
     /**
@@ -50,12 +36,16 @@ public class MainMenu extends javax.swing.JFrame {
     private void initComponents() {
 
         mainBackgroundPanel = new javax.swing.JPanel();
-        jPanel1 = new javax.swing.JPanel();
+        graphPanel = new javax.swing.JPanel();
+        controlPanel = new javax.swing.JPanel();
+        controlModeOnePanel = new javax.swing.JPanel();
+        jLabel1 = new javax.swing.JLabel();
         jTextField1 = new javax.swing.JTextField();
+        jButton1 = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
         value = new javax.swing.JTextArea();
-        jButton1 = new javax.swing.JButton();
         jButton2 = new javax.swing.JButton();
+        jButton3 = new javax.swing.JButton();
         menuBar = new javax.swing.JMenuBar();
         setupMenu = new javax.swing.JMenu();
         connectionMenu = new javax.swing.JMenuItem();
@@ -69,13 +59,14 @@ public class MainMenu extends javax.swing.JFrame {
         java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("ui/Bundle"); // NOI18N
         setTitle(bundle.getString("MainMenu.title")); // NOI18N
 
-        jPanel1.setLayout(new java.awt.BorderLayout());
+        graphPanel.setLayout(new java.awt.BorderLayout());
+
+        controlPanel.setLayout(new java.awt.CardLayout());
+
+        jLabel1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resource/icons/icons8-cancel-24.png"))); // NOI18N
+        jLabel1.setText(bundle.getString("MainMenu.jLabel1.text")); // NOI18N
 
         jTextField1.setText(bundle.getString("MainMenu.jTextField1.text")); // NOI18N
-
-        value.setColumns(20);
-        value.setRows(5);
-        jScrollPane1.setViewportView(value);
 
         jButton1.setText(bundle.getString("MainMenu.jButton1.text")); // NOI18N
         jButton1.addActionListener(new java.awt.event.ActionListener() {
@@ -84,6 +75,10 @@ public class MainMenu extends javax.swing.JFrame {
             }
         });
 
+        value.setColumns(20);
+        value.setRows(5);
+        jScrollPane1.setViewportView(value);
+
         jButton2.setText(bundle.getString("MainMenu.jButton2.text")); // NOI18N
         jButton2.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -91,44 +86,79 @@ public class MainMenu extends javax.swing.JFrame {
             }
         });
 
+        jButton3.setText(bundle.getString("MainMenu.jButton3.text")); // NOI18N
+        jButton3.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton3ActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout controlModeOnePanelLayout = new javax.swing.GroupLayout(controlModeOnePanel);
+        controlModeOnePanel.setLayout(controlModeOnePanelLayout);
+        controlModeOnePanelLayout.setHorizontalGroup(
+            controlModeOnePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(controlModeOnePanelLayout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(controlModeOnePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabel1)
+                    .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 109, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(controlModeOnePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                        .addComponent(jButton3)
+                        .addComponent(jButton2)))
+                .addContainerGap(33, Short.MAX_VALUE))
+        );
+        controlModeOnePanelLayout.setVerticalGroup(
+            controlModeOnePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(controlModeOnePanelLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jLabel1)
+                .addGap(37, 37, 37)
+                .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jButton1)
+                .addGap(18, 18, 18)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jButton2)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 57, Short.MAX_VALUE)
+                .addComponent(jButton3)
+                .addContainerGap())
+        );
+
+        controlPanel.add(controlModeOnePanel, "card2");
+
         javax.swing.GroupLayout mainBackgroundPanelLayout = new javax.swing.GroupLayout(mainBackgroundPanel);
         mainBackgroundPanel.setLayout(mainBackgroundPanelLayout);
         mainBackgroundPanelLayout.setHorizontalGroup(
             mainBackgroundPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(mainBackgroundPanelLayout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(mainBackgroundPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jButton2)
-                    .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 833, Short.MAX_VALUE)
-                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addComponent(controlPanel, javax.swing.GroupLayout.PREFERRED_SIZE, 154, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(graphPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 888, Short.MAX_VALUE)
+                .addContainerGap())
         );
         mainBackgroundPanelLayout.setVerticalGroup(
             mainBackgroundPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(mainBackgroundPanelLayout.createSequentialGroup()
-                .addGroup(mainBackgroundPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(mainBackgroundPanelLayout.createSequentialGroup()
-                        .addGap(124, 124, 124)
-                        .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(jButton1)
-                        .addGap(51, 51, 51)
-                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(jButton2))
-                    .addGroup(mainBackgroundPanelLayout.createSequentialGroup()
-                        .addContainerGap(401, Short.MAX_VALUE)
-                        .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(70, Short.MAX_VALUE))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, mainBackgroundPanelLayout.createSequentialGroup()
+                .addGroup(mainBackgroundPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, mainBackgroundPanelLayout.createSequentialGroup()
+                        .addContainerGap()
+                        .addComponent(graphPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(controlPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGap(80, 80, 80))
         );
 
         setupMenu.setText(bundle.getString("MainMenu.setupMenu.text")); // NOI18N
         setupMenu.setToolTipText(bundle.getString("MainMenu.setupMenu.toolTipText")); // NOI18N
 
         connectionMenu.setText(bundle.getString("MainMenu.connectionMenu.text")); // NOI18N
+        connectionMenu.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                connectionMenuActionPerformed(evt);
+            }
+        });
         setupMenu.add(connectionMenu);
 
         modeSelectionMenu.setText(bundle.getString("MainMenu.modeSelectionMenu.text")); // NOI18N
@@ -175,48 +205,50 @@ public class MainMenu extends javax.swing.JFrame {
     }//GEN-LAST:event_exitMenuActionPerformed
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        myArduino.serialWrite(jTextField1.getText());
+        if(myArduino != null){
+            myArduino.serialWrite(jTextField1.getText()); 
+        }
+        else{
+            System.out.println("Something is wrong");
+        }
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
         value.setText(myArduino.serialRead());
     }//GEN-LAST:event_jButton2ActionPerformed
-    private void pActionPerformed(java.awt.event.ActionEvent evt){
-        actionCounter++;
-        String port = p.getSelectedItem().toString();
-        System.out.println(port);
-        myArduino = new Arduino(p.getSelectedItem().toString(), 9600);
-        System.out.println(myArduino.openConnection());
-        SerialPort comPort = myArduino.getSerialPort();
-        System.err.println(actionCounter);
-        XYSeries series = graph.getSeries();
-        
-        comPort.addDataListener(new SerialPortDataListener() {
-        @Override
-        public int getListeningEvents() { return SerialPort.LISTENING_EVENT_DATA_AVAILABLE; }
-        @Override
-        public void serialEvent(SerialPortEvent event)
-        {
-            if (event.getEventType() == SerialPort.LISTENING_EVENT_DATA_AVAILABLE){
-                String show = myArduino.serialRead();
-                String[] result = show.split("\n", 2); // get first line, not 0
-                if(!show.equals(""))
-                    value.setText(result[0]);
-                    long start = System.currentTimeMillis();
-                    series.add(start, Double.parseDouble(result[0]));                    
-            }
-
+    /* MenuBar action when Connection is selected*/
+    private void connectionMenuActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_connectionMenuActionPerformed
+        ArduinoConnection arduinoConnection = new ArduinoConnection(this, true);
+        arduinoConnection.setLocationRelativeTo(this);
+        arduinoConnection.setVisible(true);
+        if(arduinoConnection.getReturnStatus() == 1 && arduinoConnection.isConnected){
+            this.myArduino = arduinoConnection.myArduino;
+            this.comPort = arduinoConnection.comPort;
+            jLabel1.setText("Connected");
+            jLabel1.setIcon(new ImageIcon(getClass().getResource("/resource/icons/icons8-ok-24.png")));
         }
-        });
+    }//GEN-LAST:event_connectionMenuActionPerformed
+
+    private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
+        GraphWorker gw = new GraphWorker(myArduino, graph);
+        gw.execute();
+    }//GEN-LAST:event_jButton3ActionPerformed
+   
+    public void setArduino(Arduino arduino){
+        myArduino = arduino;
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JMenu aboutMenu;
     private javax.swing.JMenuItem connectionMenu;
+    private javax.swing.JPanel controlModeOnePanel;
+    private javax.swing.JPanel controlPanel;
     private javax.swing.JMenuItem exitMenu;
+    private javax.swing.JPanel graphPanel;
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
-    private javax.swing.JPanel jPanel1;
+    private javax.swing.JButton jButton3;
+    private javax.swing.JLabel jLabel1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JPopupMenu.Separator jSeparator1;
     private javax.swing.JTextField jTextField1;

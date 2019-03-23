@@ -7,6 +7,7 @@ import arduino.*;
 import com.fazecast.jSerialComm.SerialPort;
 import communication.GraphWorker;
 import graph.TimeGraph;
+import java.awt.CardLayout;
 import javax.swing.ImageIcon;
 /**
  *
@@ -17,6 +18,7 @@ public class MainMenu extends javax.swing.JFrame {
     private Arduino myArduino;
     private SerialPort comPort;    
     private final TimeGraph graph;
+    private GraphWorker gw;
     /**
      * Creates new form MainMenu
      */
@@ -38,7 +40,7 @@ public class MainMenu extends javax.swing.JFrame {
         mainBackgroundPanel = new javax.swing.JPanel();
         graphPanel = new javax.swing.JPanel();
         controlPanel = new javax.swing.JPanel();
-        controlModeOnePanel = new javax.swing.JPanel();
+        mainControlPanel = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
         jTextField1 = new javax.swing.JTextField();
         jButton1 = new javax.swing.JButton();
@@ -46,6 +48,9 @@ public class MainMenu extends javax.swing.JFrame {
         value = new javax.swing.JTextArea();
         jButton2 = new javax.swing.JButton();
         jButton3 = new javax.swing.JButton();
+        modeOneControlPanel = new javax.swing.JPanel();
+        mAWriteText = new javax.swing.JTextField();
+        executeButton = new javax.swing.JButton();
         menuBar = new javax.swing.JMenuBar();
         setupMenu = new javax.swing.JMenu();
         connectionMenu = new javax.swing.JMenuItem();
@@ -93,25 +98,25 @@ public class MainMenu extends javax.swing.JFrame {
             }
         });
 
-        javax.swing.GroupLayout controlModeOnePanelLayout = new javax.swing.GroupLayout(controlModeOnePanel);
-        controlModeOnePanel.setLayout(controlModeOnePanelLayout);
-        controlModeOnePanelLayout.setHorizontalGroup(
-            controlModeOnePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(controlModeOnePanelLayout.createSequentialGroup()
+        javax.swing.GroupLayout mainControlPanelLayout = new javax.swing.GroupLayout(mainControlPanel);
+        mainControlPanel.setLayout(mainControlPanelLayout);
+        mainControlPanelLayout.setHorizontalGroup(
+            mainControlPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(mainControlPanelLayout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(controlModeOnePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(mainControlPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jLabel1)
                     .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 109, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGroup(controlModeOnePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addGroup(mainControlPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                         .addComponent(jButton3)
                         .addComponent(jButton2)))
                 .addContainerGap(33, Short.MAX_VALUE))
         );
-        controlModeOnePanelLayout.setVerticalGroup(
-            controlModeOnePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(controlModeOnePanelLayout.createSequentialGroup()
+        mainControlPanelLayout.setVerticalGroup(
+            mainControlPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(mainControlPanelLayout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jLabel1)
                 .addGap(37, 37, 37)
@@ -127,7 +132,45 @@ public class MainMenu extends javax.swing.JFrame {
                 .addContainerGap())
         );
 
-        controlPanel.add(controlModeOnePanel, "card2");
+        controlPanel.add(mainControlPanel, "mainControlPanel");
+
+        mAWriteText.setText(bundle.getString("MainMenu.mAWriteText.text")); // NOI18N
+        mAWriteText.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                mAWriteTextKeyTyped(evt);
+            }
+        });
+
+        executeButton.setText(bundle.getString("MainMenu.executeButton.text")); // NOI18N
+        executeButton.setToolTipText(bundle.getString("MainMenu.executeButton.toolTipText")); // NOI18N
+        executeButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                executeButtonActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout modeOneControlPanelLayout = new javax.swing.GroupLayout(modeOneControlPanel);
+        modeOneControlPanel.setLayout(modeOneControlPanelLayout);
+        modeOneControlPanelLayout.setHorizontalGroup(
+            modeOneControlPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(modeOneControlPanelLayout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(modeOneControlPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(mAWriteText, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(executeButton))
+                .addContainerGap(61, Short.MAX_VALUE))
+        );
+        modeOneControlPanelLayout.setVerticalGroup(
+            modeOneControlPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(modeOneControlPanelLayout.createSequentialGroup()
+                .addGap(50, 50, 50)
+                .addComponent(mAWriteText, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(executeButton)
+                .addContainerGap(251, Short.MAX_VALUE))
+        );
+
+        controlPanel.add(modeOneControlPanel, "modeOneControlPanel");
 
         javax.swing.GroupLayout mainBackgroundPanelLayout = new javax.swing.GroupLayout(mainBackgroundPanel);
         mainBackgroundPanel.setLayout(mainBackgroundPanelLayout);
@@ -162,6 +205,11 @@ public class MainMenu extends javax.swing.JFrame {
         setupMenu.add(connectionMenu);
 
         modeSelectionMenu.setText(bundle.getString("MainMenu.modeSelectionMenu.text")); // NOI18N
+        modeSelectionMenu.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                modeSelectionMenuActionPerformed(evt);
+            }
+        });
         setupMenu.add(modeSelectionMenu);
         setupMenu.add(jSeparator1);
 
@@ -230,9 +278,45 @@ public class MainMenu extends javax.swing.JFrame {
     }//GEN-LAST:event_connectionMenuActionPerformed
 
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
-        GraphWorker gw = new GraphWorker(myArduino, graph);
+        gw = new GraphWorker(myArduino, graph);
         gw.execute();
     }//GEN-LAST:event_jButton3ActionPerformed
+    /* MenuBar action when Mode Selection is selected*/
+    private void modeSelectionMenuActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_modeSelectionMenuActionPerformed
+        ModeSelection modeSelection = new ModeSelection(this, true);
+        modeSelection.setLocationRelativeTo(this);
+        modeSelection.setVisible(true);
+        if(modeSelection.getReturnStatus() == 1){
+            String mode = modeSelection.getSelectedMode();
+            if(mode.equals("mode1")){
+                CardLayout card = (CardLayout) controlPanel.getLayout();
+                card.show(controlPanel, "modeOneControlPanel");
+                gw = new GraphWorker(myArduino, graph);
+                gw.execute();
+            }                
+        }
+    }//GEN-LAST:event_modeSelectionMenuActionPerformed
+
+    private void mAWriteTextKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_mAWriteTextKeyTyped
+        char c=evt.getKeyChar();
+        if((Character.isAlphabetic(c))){
+            getToolkit().beep();
+            evt.consume();
+        }
+    }//GEN-LAST:event_mAWriteTextKeyTyped
+
+    private void executeButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_executeButtonActionPerformed
+        String text = mAWriteText.getText();
+        if(!text.equals("")){
+            Double mA = Double.parseDouble(text);
+            mA = (mA*4095)/21.28;
+            int sendData = mA.intValue();
+            text = 'M'+Integer.toString(sendData);
+            byte[] bytes = text.getBytes();
+            comPort.writeBytes(bytes, bytes.length);
+            System.out.println(text);
+        }
+    }//GEN-LAST:event_executeButtonActionPerformed
    
     public void setArduino(Arduino arduino){
         myArduino = arduino;
@@ -241,8 +325,8 @@ public class MainMenu extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JMenu aboutMenu;
     private javax.swing.JMenuItem connectionMenu;
-    private javax.swing.JPanel controlModeOnePanel;
     private javax.swing.JPanel controlPanel;
+    private javax.swing.JButton executeButton;
     private javax.swing.JMenuItem exitMenu;
     private javax.swing.JPanel graphPanel;
     private javax.swing.JButton jButton1;
@@ -252,8 +336,11 @@ public class MainMenu extends javax.swing.JFrame {
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JPopupMenu.Separator jSeparator1;
     private javax.swing.JTextField jTextField1;
+    private javax.swing.JTextField mAWriteText;
     private javax.swing.JPanel mainBackgroundPanel;
+    private javax.swing.JPanel mainControlPanel;
     private javax.swing.JMenuBar menuBar;
+    private javax.swing.JPanel modeOneControlPanel;
     private javax.swing.JMenuItem modeSelectionMenu;
     private javax.swing.JMenu settingsMenu;
     private javax.swing.JMenu setupMenu;

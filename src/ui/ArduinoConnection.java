@@ -299,9 +299,10 @@ public class ArduinoConnection extends javax.swing.JDialog {
         if(p.getSelectedIndex() != -1){
             String port = p.getSelectedItem().toString();
             System.out.println(port);
-            myArduino = new Arduino(p.getSelectedItem().toString(), 57600);
-            System.out.println(myArduino.openConnection());
+            myArduino = new Arduino(p.getSelectedItem().toString(), 115200);
             comPort = myArduino.getSerialPort();
+            //comPort.setComPortTimeouts(SerialPort.TIMEOUT_READ_SEMI_BLOCKING, 20, 0);
+            System.out.println(myArduino.openConnection());
             Thread.sleep(1500);
             String hi = "H";
             myArduino.serialWrite(hi);   

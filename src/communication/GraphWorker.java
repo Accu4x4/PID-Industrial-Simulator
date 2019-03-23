@@ -35,8 +35,9 @@ public class GraphWorker extends SwingWorker<String, Double>{
     
     @Override
     protected String doInBackground() throws InterruptedException{
-        int num; 
-        byte[] readBuffer = new byte[3];
+        int num;
+        double mA; 
+        byte[] readBuffer = new byte[5];
         comPort.setFlowControl(SerialPort.FLOW_CONTROL_CTS_ENABLED);
         System.out.println("FlowControlSettings: "+comPort.getFlowControlSettings());
         series = this.graph.getSeries(); 
@@ -45,10 +46,12 @@ public class GraphWorker extends SwingWorker<String, Double>{
                 if(comPort.bytesAvailable() > 0){
                     Thread.sleep(10);
                     num = comPort.readBytes(readBuffer, readBuffer.length);
-                    String s = new String(readBuffer);
-                    System.out.println("Value: "+s+", bytes: "+num);
-                    publish(Double.parseDouble(s));  
-                    for(int i = 0; i < 3; i++)
+                    String string = new String(readBuffer);
+                    //System.out.println("Value: "+s+", bytes: "+num);
+                    mA = Double.parseDouble(string);
+                    mA = (mA*4.95)/900.9;  
+                    publish(mA);  
+                    for(int i = 0; i < 5; i++)
                        readBuffer[i] = 0;
                 }
             }
@@ -67,5 +70,5 @@ public class GraphWorker extends SwingWorker<String, Double>{
     @Override
     protected void done(){
 
-    }    
+    } 
 }

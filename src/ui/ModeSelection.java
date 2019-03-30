@@ -17,7 +17,7 @@ import javax.swing.KeyStroke;
  */
 public class ModeSelection extends javax.swing.JDialog {
     
-    private String selectedMode;
+    private String selectedMode = "";
     /**
      * A return status code - returned if Cancel button has been pressed
      */

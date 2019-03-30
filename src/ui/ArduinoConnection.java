@@ -24,6 +24,7 @@ import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.KeyStroke;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 
 /**
  *
@@ -301,61 +302,34 @@ public class ArduinoConnection extends javax.swing.JDialog {
             System.out.println(port);
             myArduino = new Arduino(p.getSelectedItem().toString(), 115200);
             comPort = myArduino.getSerialPort();
-            //comPort.setComPortTimeouts(SerialPort.TIMEOUT_READ_SEMI_BLOCKING, 20, 0);
             System.out.println(myArduino.openConnection());
-            Thread.sleep(1500);
-            String hi = "H";
-            myArduino.serialWrite(hi);   
-            sendLabel.setText("You said 'Hi' at "+port+"...");
-            try {
-                while (!isConnected){
-                    if(comPort.bytesAvailable() > 0){
-                        Thread.sleep(10);
-                        String show = myArduino.serialRead();
-                        receiveLabel.setText(port+" responded with '"+show+"'..."); 
-                        isConnected = true;
-                        textLabel.setForeground(Color.blue);
-                        textLabel.setText("Connection with arduino established");
-                        //num = comPort.readBytes(readBuffer, readBuffer.length);
-                        //String s = new String(readBuffer);
-                        //int value = ByteBuffer.wrap(readBuffer).getInt();
-                        //System.out.println("Value: "+s+", bytes: "+num);
-                        //publish(Double.parseDouble(s));  
-                        //for(int i = 0; i < 6; i++)
-                        //    readBuffer[i] = 0;
+            if(!myArduino.openConnection()){
+                JOptionPane.showMessageDialog(null, "Connection failed", "Warning", JOptionPane.WARNING_MESSAGE); 
+            }
+            else{
+                Thread.sleep(1500);
+                String hi = "H";
+                myArduino.serialWrite(hi);   
+                sendLabel.setText("You said 'Hi' at "+port+"...");
+                try {
+                    while (!isConnected){
+                        if(comPort.bytesAvailable() > 0){
+                            Thread.sleep(10);
+                            String show = myArduino.serialRead();
+                            receiveLabel.setText(port+" responded with '"+show+"'..."); 
+                            isConnected = true;
+                            textLabel.setForeground(Color.blue);
+                            textLabel.setText("Connection with arduino established");
+                        }
                     }
-                }
-            } catch (Exception e) { e.printStackTrace(); }
+                } catch (Exception e) { e.printStackTrace(); }
         //System.out.println("Read " + i + ": " + s + " bytes.");
+            }
         }
     } 
     /* When connect button is pressed, try to communicate with arduino via selected port*/
     private void connectActionPerformed(java.awt.event.ActionEvent evt){
-        // get the value from JComboBox p
-        //String port = p.getSelectedItem().toString();
-        //System.out.println(port);
-        //myArduino = new Arduino(p.getSelectedItem().toString(), 9600);
-        //System.out.println(myArduino.openConnection());
-        //SerialPort comPort = myArduino.getSerialPort();
-        // add port listener to get data from arduino
-        //comPort.addDataListener(new SerialPortDataListener() {
-        //@Override
-        //public int getListeningEvents() { 
-        //    return SerialPort.LISTENING_EVENT_DATA_AVAILABLE; }
-        //@Override
-        //public void serialEvent(SerialPortEvent event)
-        //{
-        //    if (event.getEventType() == SerialPort.LISTENING_EVENT_DATA_AVAILABLE){
-        //        System.out.println("Mpike");
-        //        String show = myArduino.serialRead();
-        //        System.out.println(show);
-        //        String[] result = show.split("\n", 2); // get first line, not 0
-        //        if(!show.equals(""))
-        //            receiveLabel.setText("Arduino responded with '"+result[0]+"'...");                  
-        //    }
-
-        //}
-        //});  
+ 
     }
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton cancelButton;

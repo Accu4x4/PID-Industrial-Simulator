@@ -9,6 +9,8 @@ import communication.GraphWorker;
 import graph.TimeGraph;
 import java.awt.CardLayout;
 import javax.swing.ImageIcon;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 /**
  *
  * @author dinob
@@ -42,15 +44,20 @@ public class MainMenu extends javax.swing.JFrame {
         controlPanel = new javax.swing.JPanel();
         mainControlPanel = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
-        jTextField1 = new javax.swing.JTextField();
-        jButton1 = new javax.swing.JButton();
-        jScrollPane1 = new javax.swing.JScrollPane();
-        value = new javax.swing.JTextArea();
-        jButton2 = new javax.swing.JButton();
-        jButton3 = new javax.swing.JButton();
         modeOneControlPanel = new javax.swing.JPanel();
-        mAWriteText = new javax.swing.JTextField();
-        executeButton = new javax.swing.JButton();
+        mAWriteTextA = new javax.swing.JTextField();
+        executeButtonA = new javax.swing.JButton();
+        mAWriteTextB = new javax.swing.JTextField();
+        executeButtonB = new javax.swing.JButton();
+        jSeparator2 = new javax.swing.JSeparator();
+        channelOneLabel = new javax.swing.JLabel();
+        channelTwoLabel = new javax.swing.JLabel();
+        jLabel2 = new javax.swing.JLabel();
+        jLabel3 = new javax.swing.JLabel();
+        channelOneIn = new javax.swing.JLabel();
+        channelTwoIn = new javax.swing.JLabel();
+        jLabel4 = new javax.swing.JLabel();
+        jLabel5 = new javax.swing.JLabel();
         menuBar = new javax.swing.JMenuBar();
         setupMenu = new javax.swing.JMenu();
         connectionMenu = new javax.swing.JMenuItem();
@@ -71,47 +78,13 @@ public class MainMenu extends javax.swing.JFrame {
         jLabel1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resource/icons/icons8-cancel-24.png"))); // NOI18N
         jLabel1.setText(bundle.getString("MainMenu.jLabel1.text")); // NOI18N
 
-        jTextField1.setText(bundle.getString("MainMenu.jTextField1.text")); // NOI18N
-
-        jButton1.setText(bundle.getString("MainMenu.jButton1.text")); // NOI18N
-        jButton1.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton1ActionPerformed(evt);
-            }
-        });
-
-        value.setColumns(20);
-        value.setRows(5);
-        jScrollPane1.setViewportView(value);
-
-        jButton2.setText(bundle.getString("MainMenu.jButton2.text")); // NOI18N
-        jButton2.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton2ActionPerformed(evt);
-            }
-        });
-
-        jButton3.setText(bundle.getString("MainMenu.jButton3.text")); // NOI18N
-        jButton3.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton3ActionPerformed(evt);
-            }
-        });
-
         javax.swing.GroupLayout mainControlPanelLayout = new javax.swing.GroupLayout(mainControlPanel);
         mainControlPanel.setLayout(mainControlPanelLayout);
         mainControlPanelLayout.setHorizontalGroup(
             mainControlPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(mainControlPanelLayout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(mainControlPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel1)
-                    .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 109, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGroup(mainControlPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                        .addComponent(jButton3)
-                        .addComponent(jButton2)))
+                .addComponent(jLabel1)
                 .addContainerGap(33, Short.MAX_VALUE))
         );
         mainControlPanelLayout.setVerticalGroup(
@@ -119,55 +92,137 @@ public class MainMenu extends javax.swing.JFrame {
             .addGroup(mainControlPanelLayout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jLabel1)
-                .addGap(37, 37, 37)
-                .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jButton1)
-                .addGap(18, 18, 18)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jButton2)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 57, Short.MAX_VALUE)
-                .addComponent(jButton3)
-                .addContainerGap())
+                .addContainerGap(331, Short.MAX_VALUE))
         );
 
         controlPanel.add(mainControlPanel, "mainControlPanel");
 
-        mAWriteText.setText(bundle.getString("MainMenu.mAWriteText.text")); // NOI18N
-        mAWriteText.addKeyListener(new java.awt.event.KeyAdapter() {
+        mAWriteTextA.setText(bundle.getString("MainMenu.mAWriteTextA.text")); // NOI18N
+        mAWriteTextA.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyTyped(java.awt.event.KeyEvent evt) {
-                mAWriteTextKeyTyped(evt);
+                mAWriteTextAKeyTyped(evt);
             }
         });
 
-        executeButton.setText(bundle.getString("MainMenu.executeButton.text")); // NOI18N
-        executeButton.setToolTipText(bundle.getString("MainMenu.executeButton.toolTipText")); // NOI18N
-        executeButton.addActionListener(new java.awt.event.ActionListener() {
+        executeButtonA.setText(bundle.getString("MainMenu.executeButtonA.text")); // NOI18N
+        executeButtonA.setToolTipText(bundle.getString("MainMenu.executeButtonA.toolTipText")); // NOI18N
+        executeButtonA.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                executeButtonActionPerformed(evt);
+                executeButtonAActionPerformed(evt);
             }
         });
+
+        mAWriteTextB.setText(bundle.getString("MainMenu.mAWriteTextB.text")); // NOI18N
+        mAWriteTextB.setAlignmentX(1.0F);
+        mAWriteTextB.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                mAWriteTextBActionPerformed(evt);
+            }
+        });
+        mAWriteTextB.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                mAWriteTextBKeyTyped(evt);
+            }
+        });
+
+        executeButtonB.setText(bundle.getString("MainMenu.executeButtonB.text")); // NOI18N
+        executeButtonB.setToolTipText(bundle.getString("MainMenu.executeButtonB.toolTipText")); // NOI18N
+        executeButtonB.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                executeButtonBActionPerformed(evt);
+            }
+        });
+
+        channelOneLabel.setText(bundle.getString("MainMenu.channelOneLabel.text")); // NOI18N
+
+        channelTwoLabel.setText(bundle.getString("MainMenu.channelTwoLabel.text")); // NOI18N
+
+        jLabel2.setFont(new java.awt.Font("Dialog", 0, 12)); // NOI18N
+        jLabel2.setText(bundle.getString("MainMenu.jLabel2.text")); // NOI18N
+
+        jLabel3.setFont(new java.awt.Font("Dialog", 0, 12)); // NOI18N
+        jLabel3.setText(bundle.getString("MainMenu.jLabel3.text")); // NOI18N
+
+        channelOneIn.setBackground(new java.awt.Color(255, 255, 255));
+        channelOneIn.setForeground(new java.awt.Color(255, 51, 51));
+        channelOneIn.setText(bundle.getString("MainMenu.channelOneIn.text")); // NOI18N
+        channelOneIn.setBorder(javax.swing.BorderFactory.createEtchedBorder());
+        channelOneIn.setOpaque(true);
+
+        channelTwoIn.setBackground(new java.awt.Color(255, 255, 255));
+        channelTwoIn.setForeground(new java.awt.Color(255, 51, 51));
+        channelTwoIn.setText(bundle.getString("MainMenu.channelTwoIn.text")); // NOI18N
+        channelTwoIn.setBorder(javax.swing.BorderFactory.createEtchedBorder());
+        channelTwoIn.setOpaque(true);
+
+        jLabel4.setFont(new java.awt.Font("Dialog", 0, 12)); // NOI18N
+        jLabel4.setText(bundle.getString("MainMenu.jLabel4.text")); // NOI18N
+
+        jLabel5.setFont(new java.awt.Font("Dialog", 0, 12)); // NOI18N
+        jLabel5.setText(bundle.getString("MainMenu.jLabel5.text")); // NOI18N
 
         javax.swing.GroupLayout modeOneControlPanelLayout = new javax.swing.GroupLayout(modeOneControlPanel);
         modeOneControlPanel.setLayout(modeOneControlPanelLayout);
         modeOneControlPanelLayout.setHorizontalGroup(
             modeOneControlPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(jSeparator2)
             .addGroup(modeOneControlPanelLayout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(modeOneControlPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(mAWriteText, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(executeButton))
-                .addContainerGap(61, Short.MAX_VALUE))
+                    .addComponent(channelOneLabel)
+                    .addComponent(channelTwoLabel)
+                    .addComponent(executeButtonA)
+                    .addComponent(executeButtonB)
+                    .addGroup(modeOneControlPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                        .addGroup(javax.swing.GroupLayout.Alignment.LEADING, modeOneControlPanelLayout.createSequentialGroup()
+                            .addComponent(jLabel3)
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(channelOneIn, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGroup(javax.swing.GroupLayout.Alignment.LEADING, modeOneControlPanelLayout.createSequentialGroup()
+                            .addComponent(jLabel5)
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                            .addComponent(mAWriteTextA, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addGroup(modeOneControlPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                        .addGroup(javax.swing.GroupLayout.Alignment.LEADING, modeOneControlPanelLayout.createSequentialGroup()
+                            .addComponent(jLabel4)
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(channelTwoIn, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGroup(javax.swing.GroupLayout.Alignment.LEADING, modeOneControlPanelLayout.createSequentialGroup()
+                            .addComponent(jLabel2)
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                            .addComponent(mAWriteTextB, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                .addContainerGap(35, Short.MAX_VALUE))
         );
         modeOneControlPanelLayout.setVerticalGroup(
             modeOneControlPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(modeOneControlPanelLayout.createSequentialGroup()
-                .addGap(50, 50, 50)
-                .addComponent(mAWriteText, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(executeButton)
-                .addContainerGap(251, Short.MAX_VALUE))
+                .addGap(25, 25, 25)
+                .addComponent(channelOneLabel)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(modeOneControlPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel5, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(mAWriteTextA, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(executeButtonA)
+                .addGap(12, 12, 12)
+                .addGroup(modeOneControlPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel3)
+                    .addComponent(channelOneIn))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jSeparator2, javax.swing.GroupLayout.PREFERRED_SIZE, 10, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(channelTwoLabel)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(modeOneControlPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(mAWriteTextB, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(executeButtonB)
+                .addGap(11, 11, 11)
+                .addGroup(modeOneControlPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel4)
+                    .addComponent(channelTwoIn))
+                .addGap(109, 109, 109))
         );
 
         controlPanel.add(modeOneControlPanel, "modeOneControlPanel");
@@ -248,39 +303,31 @@ public class MainMenu extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void exitMenuActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_exitMenuActionPerformed
+        this.myArduino.serialWrite("Q");
+        this.myArduino.closeConnection();
         System.exit(0);
-        myArduino.closeConnection();
     }//GEN-LAST:event_exitMenuActionPerformed
-
-    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        if(myArduino != null){
-            myArduino.serialWrite(jTextField1.getText()); 
-        }
-        else{
-            System.out.println("Something is wrong");
-        }
-    }//GEN-LAST:event_jButton1ActionPerformed
-
-    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
-        value.setText(myArduino.serialRead());
-    }//GEN-LAST:event_jButton2ActionPerformed
     /* MenuBar action when Connection is selected*/
     private void connectionMenuActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_connectionMenuActionPerformed
-        ArduinoConnection arduinoConnection = new ArduinoConnection(this, true);
-        arduinoConnection.setLocationRelativeTo(this);
-        arduinoConnection.setVisible(true);
-        if(arduinoConnection.getReturnStatus() == 1 && arduinoConnection.isConnected){
-            this.myArduino = arduinoConnection.myArduino;
-            this.comPort = arduinoConnection.comPort;
-            jLabel1.setText("Connected");
-            jLabel1.setIcon(new ImageIcon(getClass().getResource("/resource/icons/icons8-ok-24.png")));
+        if(this.connectionMenu.getText().equals("Connect")){
+            ArduinoConnection arduinoConnection = new ArduinoConnection(this, true);
+            arduinoConnection.setLocationRelativeTo(this);
+            arduinoConnection.setVisible(true);
+            if(arduinoConnection.getReturnStatus() == 1 && arduinoConnection.isConnected){
+                this.connectionMenu.setText("Disconnect");
+                this.myArduino = arduinoConnection.myArduino;
+                this.comPort = arduinoConnection.comPort;
+                jLabel1.setText("Connected");
+                jLabel1.setIcon(new ImageIcon(getClass().getResource("/resource/icons/icons8-ok-24.png")));
+            }            
+        }
+        else if(this.connectionMenu.getText().equals("Disconnect")){
+            this.myArduino.serialWrite("Q");
+            this.myArduino.closeConnection();
+            this.connectionMenu.setText("Connect");
+            JOptionPane.showMessageDialog(null, "Arduino has been disconnected", "Information", JOptionPane.INFORMATION_MESSAGE);  
         }
     }//GEN-LAST:event_connectionMenuActionPerformed
-
-    private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
-        gw = new GraphWorker(myArduino, graph);
-        gw.execute();
-    }//GEN-LAST:event_jButton3ActionPerformed
     /* MenuBar action when Mode Selection is selected*/
     private void modeSelectionMenuActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_modeSelectionMenuActionPerformed
         ModeSelection modeSelection = new ModeSelection(this, true);
@@ -291,52 +338,84 @@ public class MainMenu extends javax.swing.JFrame {
             if(mode.equals("mode1")){
                 CardLayout card = (CardLayout) controlPanel.getLayout();
                 card.show(controlPanel, "modeOneControlPanel");
-                gw = new GraphWorker(myArduino, graph);
+                gw = new GraphWorker(myArduino, graph,channelOneIn);
                 gw.execute();
             }                
         }
     }//GEN-LAST:event_modeSelectionMenuActionPerformed
 
-    private void mAWriteTextKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_mAWriteTextKeyTyped
-        char c=evt.getKeyChar();
-        if((Character.isAlphabetic(c))){
-            getToolkit().beep();
-            evt.consume();
-        }
-    }//GEN-LAST:event_mAWriteTextKeyTyped
+    private void mAWriteTextAKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_mAWriteTextAKeyTyped
+        textKeyTyped(evt);
+    }//GEN-LAST:event_mAWriteTextAKeyTyped
 
-    private void executeButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_executeButtonActionPerformed
-        String text = mAWriteText.getText();
+    private void executeButtonAActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_executeButtonAActionPerformed
+        String text = mAWriteTextA.getText();
         if(!text.equals("")){
             Double mA = Double.parseDouble(text);
             mA = (mA*4095)/21.28;
             int sendData = mA.intValue();
-            text = 'M'+Integer.toString(sendData);
+            text = "MA"+Integer.toString(sendData);
             byte[] bytes = text.getBytes();
             comPort.writeBytes(bytes, bytes.length);
             System.out.println(text);
         }
-    }//GEN-LAST:event_executeButtonActionPerformed
+    }//GEN-LAST:event_executeButtonAActionPerformed
+
+    private void mAWriteTextBKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_mAWriteTextBKeyTyped
+        textKeyTyped(evt);
+    }//GEN-LAST:event_mAWriteTextBKeyTyped
+
+    private void executeButtonBActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_executeButtonBActionPerformed
+        String text = mAWriteTextB.getText();
+        if(!text.equals("")){
+            Double mA = Double.parseDouble(text);
+            mA = (mA*4095)/21.28;
+            int sendData = mA.intValue();
+            text = "MB"+Integer.toString(sendData);
+            byte[] bytes = text.getBytes();
+            comPort.writeBytes(bytes, bytes.length);
+            System.out.println(text);
+        }
+    }//GEN-LAST:event_executeButtonBActionPerformed
+
+    private void mAWriteTextBActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mAWriteTextBActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_mAWriteTextBActionPerformed
    
     public void setArduino(Arduino arduino){
         myArduino = arduino;
     }
+    
+    /* Mode 1 from textKeyTyped Event common functions */
+    private void textKeyTyped(java.awt.event.KeyEvent evt){
+        char c=evt.getKeyChar();
+        if((Character.isAlphabetic(c))){
+            getToolkit().beep();
+            evt.consume();
+        }        
+    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JMenu aboutMenu;
+    private javax.swing.JLabel channelOneIn;
+    private javax.swing.JLabel channelOneLabel;
+    private javax.swing.JLabel channelTwoIn;
+    private javax.swing.JLabel channelTwoLabel;
     private javax.swing.JMenuItem connectionMenu;
     private javax.swing.JPanel controlPanel;
-    private javax.swing.JButton executeButton;
+    private javax.swing.JButton executeButtonA;
+    private javax.swing.JButton executeButtonB;
     private javax.swing.JMenuItem exitMenu;
     private javax.swing.JPanel graphPanel;
-    private javax.swing.JButton jButton1;
-    private javax.swing.JButton jButton2;
-    private javax.swing.JButton jButton3;
     private javax.swing.JLabel jLabel1;
-    private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel3;
+    private javax.swing.JLabel jLabel4;
+    private javax.swing.JLabel jLabel5;
     private javax.swing.JPopupMenu.Separator jSeparator1;
-    private javax.swing.JTextField jTextField1;
-    private javax.swing.JTextField mAWriteText;
+    private javax.swing.JSeparator jSeparator2;
+    private javax.swing.JTextField mAWriteTextA;
+    private javax.swing.JTextField mAWriteTextB;
     private javax.swing.JPanel mainBackgroundPanel;
     private javax.swing.JPanel mainControlPanel;
     private javax.swing.JMenuBar menuBar;
@@ -344,6 +423,5 @@ public class MainMenu extends javax.swing.JFrame {
     private javax.swing.JMenuItem modeSelectionMenu;
     private javax.swing.JMenu settingsMenu;
     private javax.swing.JMenu setupMenu;
-    private javax.swing.JTextArea value;
     // End of variables declaration//GEN-END:variables
 }

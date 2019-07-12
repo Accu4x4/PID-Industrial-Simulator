@@ -14,23 +14,28 @@ import org.jfree.data.xy.XYSeries;
 /**
  *
  * @author dinob
+ * SwingWorker class for real-time data collection via serial interface
+ * It works "forever" and gathers data from arduino adding them on the
+ * specific XYSeries for graphical visualization.
  */
-public class GraphWorker extends SwingWorker<String, Double>{
+public class GraphWorker extends SwingWorker<String, String>{
     
     private final TimeGraph graph;
-    private XYSeries series;    
+    private XYSeries seriesA, seriesB;    
     private final Arduino myArduino;
     private final SerialPort comPort;  
-    private final JLabel mAValue;
+    private final JLabel mAValueA, mAValueB;
     private double time;
     private int counter = 0;
     private final double dT = 0.01;     // deltaT sample rate (defined by arduino)
+    private String channel;
     
-    public GraphWorker(Arduino arduino, TimeGraph graph, JLabel jLabel){
+    public GraphWorker(Arduino arduino, TimeGraph graph, JLabel jLabelA, JLabel jLabelB){
         time = 0;
         this.myArduino = arduino;
         this.graph = graph;
-        this.mAValue = jLabel;
+        this.mAValueA = jLabelA;
+        this.mAValueB = jLabelB;
         comPort = myArduino.getSerialPort();
     }
     
@@ -44,18 +49,28 @@ public class GraphWorker extends SwingWorker<String, Double>{
         String string, result;
         //comPort.setFlowControl(SerialPort.FLOW_CONTROL_CTS_ENABLED);
         System.out.println("FlowControlSettings: "+comPort.getFlowControlSettings());
-        series = this.graph.getSeries(); 
+        seriesA = this.graph.getSeriesA();
+        seriesB = this.graph.getSeriesB();
         try {
             while (true){
                 if(comPort.bytesAvailable() > 0){
                     //Thread.sleep(10);
                     num = comPort.readBytes(readSerial, 1);
                     string = new String(readSerial);
-                    if(string.equals("k")){
+                    if(string.equals("A") || string.equals("B")){
+                        channel = string;
                         result = new String(byteBuffer);
                         mA = Double.parseDouble(result);
-                        mA = (mA*4.95)/900.9;  
-                        publish(mA);
+                        mA = (mA*5.08)/900.5;  
+                        time += dT; 
+                        if(channel.equals("A")){ 
+                           seriesA.add(time, mA);
+                           publish(Double.toString(mA)+"A");
+                        }
+                        else{
+                           seriesB.add(time, mA); 
+                           publish(Double.toString(mA)+"B");                           
+                        }
                         for(int i = 0; i <= arrayPointer; i++)
                             byteBuffer[i] = 0;                        
                         arrayPointer = 0;
@@ -64,18 +79,6 @@ public class GraphWorker extends SwingWorker<String, Double>{
                         byteBuffer[arrayPointer] = readSerial[0];
                         arrayPointer++;
                     }
-                    //num = comPort.readBytes(readBuffer, readBuffer.length);
-                    //String string = new String(readBuffer);
-                    //if(string.contains("ok")){
-                        //System.err.println(string);
-                        //string = string.replaceAll("ok", "");
-                        //System.out.println("Value: "+s+", bytes: "+num);                       
-                        //mA = Double.parseDouble(string);
-                        //mA = (mA*4.95)/900.9;  
-                        //publish(mA);
-                        //for(int i = 0; i < 10; i++)
-                            //readBuffer[i] = 0;
-                    //}
                 }
             }
         } catch (Exception e) { e.printStackTrace(); }
@@ -84,16 +87,22 @@ public class GraphWorker extends SwingWorker<String, Double>{
     }
     /* Μέθοδος επικοινωνίας με το Thread. Εδώ φτάνουν τα μυνήματα από τη μέθοδο publish */
     @Override
-    protected void process(List<Double> chunks){
-        for(int i = 0; i < chunks.size(); i++){
-            time += dT;
-            counter++;
-            if(counter == 50){
-                mAValue.setText(String.format("%.2f", chunks.get(i))); 
-                counter = 0;
-            }               
-            series.add(time, chunks.get(i));
-        }
+    protected void process(List<String> chunks){
+        counter++;
+        if(counter >= 21)
+            counter = 0;
+        if(counter >= 20){
+            for(int i = 0; i < chunks.size()-1; i++){
+                if(chunks.get(i).charAt(chunks.get(i).length()-1) == 'A'){
+                    String str = chunks.get(i).substring(0, chunks.get(i).length()-2);
+                    mAValueA.setText(String.format("%.2f", Double.parseDouble(str)));             
+                }
+                if(chunks.get(i).charAt(chunks.get(i).length()-1) == 'B'){
+                    String str = chunks.get(i).substring(0, chunks.get(i).length()-2);
+                    mAValueB.setText(String.format("%.2f", Double.parseDouble(str)));              
+                }                
+            }             
+        }       
     }
     
     @Override

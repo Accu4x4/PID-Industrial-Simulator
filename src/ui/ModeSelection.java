@@ -66,6 +66,7 @@ public class ModeSelection extends javax.swing.JDialog {
         cancelButton = new javax.swing.JButton();
         jPanel1 = new javax.swing.JPanel();
         modeOne = new javax.swing.JRadioButton();
+        modeTwo = new javax.swing.JRadioButton();
 
         addWindowListener(new java.awt.event.WindowAdapter() {
             public void windowClosing(java.awt.event.WindowEvent evt) {
@@ -94,13 +95,17 @@ public class ModeSelection extends javax.swing.JDialog {
             }
         });
 
+        modeTwo.setText("Mode 2: Use arduino as the PID controller");
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(modeOne)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(modeOne)
+                    .addComponent(modeTwo))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
@@ -108,7 +113,9 @@ public class ModeSelection extends javax.swing.JDialog {
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(modeOne)
-                .addContainerGap(242, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(modeTwo)
+                .addContainerGap(214, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -218,6 +225,7 @@ public class ModeSelection extends javax.swing.JDialog {
     private javax.swing.JButton cancelButton;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JRadioButton modeOne;
+    private javax.swing.JRadioButton modeTwo;
     private javax.swing.JButton okButton;
     // End of variables declaration//GEN-END:variables
 

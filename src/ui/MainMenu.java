@@ -9,7 +9,6 @@ import communication.GraphWorker;
 import graph.TimeGraph;
 import java.awt.CardLayout;
 import javax.swing.ImageIcon;
-import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 /**
  *
@@ -21,6 +20,8 @@ public class MainMenu extends javax.swing.JFrame {
     private SerialPort comPort;    
     private final TimeGraph graph;
     private GraphWorker gw;
+    private boolean isConnected = false;
+    
     /**
      * Creates new form MainMenu
      */
@@ -65,6 +66,7 @@ public class MainMenu extends javax.swing.JFrame {
         jSeparator1 = new javax.swing.JPopupMenu.Separator();
         exitMenu = new javax.swing.JMenuItem();
         settingsMenu = new javax.swing.JMenu();
+        setHardware = new javax.swing.JMenuItem();
         aboutMenu = new javax.swing.JMenu();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
@@ -92,12 +94,14 @@ public class MainMenu extends javax.swing.JFrame {
             .addGroup(mainControlPanelLayout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jLabel1)
-                .addContainerGap(331, Short.MAX_VALUE))
+                .addContainerGap(342, Short.MAX_VALUE))
         );
 
         controlPanel.add(mainControlPanel, "mainControlPanel");
 
         mAWriteTextA.setText(bundle.getString("MainMenu.mAWriteTextA.text")); // NOI18N
+        mAWriteTextA.setToolTipText(bundle.getString("MainMenu.mAWriteTextA.toolTipText")); // NOI18N
+        mAWriteTextA.setBorder(javax.swing.BorderFactory.createEtchedBorder());
         mAWriteTextA.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyTyped(java.awt.event.KeyEvent evt) {
                 mAWriteTextAKeyTyped(evt);
@@ -113,7 +117,7 @@ public class MainMenu extends javax.swing.JFrame {
         });
 
         mAWriteTextB.setText(bundle.getString("MainMenu.mAWriteTextB.text")); // NOI18N
-        mAWriteTextB.setAlignmentX(1.0F);
+        mAWriteTextB.setBorder(javax.swing.BorderFactory.createEtchedBorder());
         mAWriteTextB.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 mAWriteTextBActionPerformed(evt);
@@ -154,6 +158,7 @@ public class MainMenu extends javax.swing.JFrame {
         channelTwoIn.setText(bundle.getString("MainMenu.channelTwoIn.text")); // NOI18N
         channelTwoIn.setBorder(javax.swing.BorderFactory.createEtchedBorder());
         channelTwoIn.setOpaque(true);
+        channelTwoIn.setPreferredSize(new java.awt.Dimension(40, 20));
 
         jLabel4.setFont(new java.awt.Font("Dialog", 0, 12)); // NOI18N
         jLabel4.setText(bundle.getString("MainMenu.jLabel4.text")); // NOI18N
@@ -169,29 +174,29 @@ public class MainMenu extends javax.swing.JFrame {
             .addGroup(modeOneControlPanelLayout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(modeOneControlPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(channelOneLabel)
-                    .addComponent(channelTwoLabel)
-                    .addComponent(executeButtonA)
-                    .addComponent(executeButtonB)
-                    .addGroup(modeOneControlPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                        .addGroup(javax.swing.GroupLayout.Alignment.LEADING, modeOneControlPanelLayout.createSequentialGroup()
+                    .addGroup(modeOneControlPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                        .addComponent(channelOneLabel)
+                        .addComponent(channelTwoLabel)
+                        .addGroup(modeOneControlPanelLayout.createSequentialGroup()
                             .addComponent(jLabel3)
                             .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(channelOneIn, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGroup(javax.swing.GroupLayout.Alignment.LEADING, modeOneControlPanelLayout.createSequentialGroup()
+                        .addGroup(modeOneControlPanelLayout.createSequentialGroup()
                             .addComponent(jLabel5)
                             .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                            .addComponent(mAWriteTextA, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                            .addComponent(mAWriteTextA, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addComponent(executeButtonA, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                     .addGroup(modeOneControlPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                        .addComponent(executeButtonB, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addGroup(javax.swing.GroupLayout.Alignment.LEADING, modeOneControlPanelLayout.createSequentialGroup()
                             .addComponent(jLabel4)
                             .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(channelTwoIn, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(channelTwoIn, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addGroup(javax.swing.GroupLayout.Alignment.LEADING, modeOneControlPanelLayout.createSequentialGroup()
                             .addComponent(jLabel2)
                             .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                             .addComponent(mAWriteTextB, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                .addContainerGap(35, Short.MAX_VALUE))
+                .addGap(82, 82, 82))
         );
         modeOneControlPanelLayout.setVerticalGroup(
             modeOneControlPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -221,7 +226,7 @@ public class MainMenu extends javax.swing.JFrame {
                 .addGap(11, 11, 11)
                 .addGroup(modeOneControlPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel4)
-                    .addComponent(channelTwoIn))
+                    .addComponent(channelTwoIn, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(109, 109, 109))
         );
 
@@ -280,6 +285,16 @@ public class MainMenu extends javax.swing.JFrame {
 
         settingsMenu.setText(bundle.getString("MainMenu.settingsMenu.text")); // NOI18N
         settingsMenu.setToolTipText(bundle.getString("MainMenu.settingsMenu.toolTipText")); // NOI18N
+
+        setHardware.setText(bundle.getString("MainMenu.setHardware.text")); // NOI18N
+        setHardware.setToolTipText(bundle.getString("MainMenu.setHardware.toolTipText")); // NOI18N
+        setHardware.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                setHardwareActionPerformed(evt);
+            }
+        });
+        settingsMenu.add(setHardware);
+
         menuBar.add(settingsMenu);
 
         aboutMenu.setText(bundle.getString("MainMenu.aboutMenu.text")); // NOI18N
@@ -303,8 +318,10 @@ public class MainMenu extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void exitMenuActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_exitMenuActionPerformed
-        this.myArduino.serialWrite("Q");
-        this.myArduino.closeConnection();
+        if(isConnected){
+            this.myArduino.serialWrite("Q");
+            this.myArduino.closeConnection();           
+        }
         System.exit(0);
     }//GEN-LAST:event_exitMenuActionPerformed
     /* MenuBar action when Connection is selected*/
@@ -314,6 +331,7 @@ public class MainMenu extends javax.swing.JFrame {
             arduinoConnection.setLocationRelativeTo(this);
             arduinoConnection.setVisible(true);
             if(arduinoConnection.getReturnStatus() == 1 && arduinoConnection.isConnected){
+                this.isConnected = true;
                 this.connectionMenu.setText("Disconnect");
                 this.myArduino = arduinoConnection.myArduino;
                 this.comPort = arduinoConnection.comPort;
@@ -322,6 +340,7 @@ public class MainMenu extends javax.swing.JFrame {
             }            
         }
         else if(this.connectionMenu.getText().equals("Disconnect")){
+            this.isConnected = false;
             this.myArduino.serialWrite("Q");
             this.myArduino.closeConnection();
             this.connectionMenu.setText("Connect");
@@ -330,18 +349,22 @@ public class MainMenu extends javax.swing.JFrame {
     }//GEN-LAST:event_connectionMenuActionPerformed
     /* MenuBar action when Mode Selection is selected*/
     private void modeSelectionMenuActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_modeSelectionMenuActionPerformed
-        ModeSelection modeSelection = new ModeSelection(this, true);
-        modeSelection.setLocationRelativeTo(this);
-        modeSelection.setVisible(true);
-        if(modeSelection.getReturnStatus() == 1){
-            String mode = modeSelection.getSelectedMode();
-            if(mode.equals("mode1")){
-                CardLayout card = (CardLayout) controlPanel.getLayout();
-                card.show(controlPanel, "modeOneControlPanel");
-                gw = new GraphWorker(myArduino, graph,channelOneIn);
-                gw.execute();
-            }                
+        if(isConnected){
+            ModeSelection modeSelection = new ModeSelection(this, true);
+            modeSelection.setLocationRelativeTo(this);
+            modeSelection.setVisible(true);
+            if(modeSelection.getReturnStatus() == 1){
+                String mode = modeSelection.getSelectedMode();
+                if(mode.equals("mode1")){
+                    CardLayout card = (CardLayout) controlPanel.getLayout();
+                    card.show(controlPanel, "modeOneControlPanel");
+                    gw = new GraphWorker(myArduino, graph, channelOneIn, channelTwoIn);
+                    gw.execute();
+                }                   
+            }
         }
+        else
+            JOptionPane.showMessageDialog(null, "There is no connection to arduino", "No connection", JOptionPane.ERROR_MESSAGE);             
     }//GEN-LAST:event_modeSelectionMenuActionPerformed
 
     private void mAWriteTextAKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_mAWriteTextAKeyTyped
@@ -352,7 +375,7 @@ public class MainMenu extends javax.swing.JFrame {
         String text = mAWriteTextA.getText();
         if(!text.equals("")){
             Double mA = Double.parseDouble(text);
-            mA = (mA*4095)/21.28;
+            mA = (mA*4095)/20.40;
             int sendData = mA.intValue();
             text = "MA"+Integer.toString(sendData);
             byte[] bytes = text.getBytes();
@@ -381,6 +404,12 @@ public class MainMenu extends javax.swing.JFrame {
     private void mAWriteTextBActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mAWriteTextBActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_mAWriteTextBActionPerformed
+
+    private void setHardwareActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_setHardwareActionPerformed
+        HardwareSettings hs = new HardwareSettings();
+        hs.setLocationRelativeTo(null);
+        hs.setVisible(true);
+    }//GEN-LAST:event_setHardwareActionPerformed
    
     public void setArduino(Arduino arduino){
         myArduino = arduino;
@@ -421,6 +450,7 @@ public class MainMenu extends javax.swing.JFrame {
     private javax.swing.JMenuBar menuBar;
     private javax.swing.JPanel modeOneControlPanel;
     private javax.swing.JMenuItem modeSelectionMenu;
+    private javax.swing.JMenuItem setHardware;
     private javax.swing.JMenu settingsMenu;
     private javax.swing.JMenu setupMenu;
     // End of variables declaration//GEN-END:variables

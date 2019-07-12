@@ -6,8 +6,6 @@ package ui;
 import arduino.*;
 import arduino.PortDropdownMenu;
 import com.fazecast.jSerialComm.SerialPort;
-import com.fazecast.jSerialComm.SerialPortDataListener;
-import com.fazecast.jSerialComm.SerialPortEvent;
 import java.awt.Color;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
@@ -20,7 +18,6 @@ import java.util.logging.Logger;
 import javax.swing.AbstractAction;
 import javax.swing.ActionMap;
 import javax.swing.InputMap;
-import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.KeyStroke;
 import javax.swing.JLabel;
@@ -91,20 +88,6 @@ public class ArduinoConnection extends javax.swing.JDialog {
         p.setVisible(true);
         mainPanel.add(p, gridBagConstraints);
 
-        /* Create connect button and define position in the grid */         
-        JButton connect = new JButton("Connect");
-        gridBagConstraints.gridx = 8;
-        gridBagConstraints.gridy = 6;        
-        gridBagConstraints.insets = new Insets(0, 103, 20, 114);  
-        connect.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                connectActionPerformed(evt);
-            }
-        }); 
-        connect.setVisible(true);
-        mainPanel.add(connect, gridBagConstraints);
-
         /* Define position in the grid for first Label */         
         gridBagConstraints.gridx = 8;
         gridBagConstraints.gridy = 7;        
@@ -113,7 +96,7 @@ public class ArduinoConnection extends javax.swing.JDialog {
  
         /* Define position in the grid for second Label */ 
         gridBagConstraints.gridx = 8;
-        gridBagConstraints.gridy = 8;        
+        gridBagConstraints.gridy = 9;        
         gridBagConstraints.insets = new Insets(5, 103, 15, 114); 
         mainPanel.add(receiveLabel, gridBagConstraints);
         this.pack();        
@@ -171,41 +154,25 @@ public class ArduinoConnection extends javax.swing.JDialog {
             }
         });
 
-        textLabel.setText("Select serial port to connect with arduino");
+        mainPanel.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
-        javax.swing.GroupLayout mainPanelLayout = new javax.swing.GroupLayout(mainPanel);
-        mainPanel.setLayout(mainPanelLayout);
-        mainPanelLayout.setHorizontalGroup(
-            mainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 416, Short.MAX_VALUE)
-            .addGroup(mainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addGroup(mainPanelLayout.createSequentialGroup()
-                    .addGap(0, 0, Short.MAX_VALUE)
-                    .addComponent(textLabel)
-                    .addGap(0, 0, Short.MAX_VALUE)))
-        );
-        mainPanelLayout.setVerticalGroup(
-            mainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 251, Short.MAX_VALUE)
-            .addGroup(mainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addGroup(mainPanelLayout.createSequentialGroup()
-                    .addGap(0, 0, Short.MAX_VALUE)
-                    .addComponent(textLabel)
-                    .addGap(0, 0, Short.MAX_VALUE)))
-        );
+        textLabel.setText("Select serial port to connect with arduino");
+        mainPanel.add(textLabel, new org.netbeans.lib.awtextra.AbsoluteConstraints(92, 117, -1, -1));
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addContainerGap(250, Short.MAX_VALUE)
+                .addContainerGap(255, Short.MAX_VALUE)
                 .addComponent(okButton, javax.swing.GroupLayout.PREFERRED_SIZE, 67, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(cancelButton)
                 .addContainerGap())
             .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addComponent(mainPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGroup(layout.createSequentialGroup()
+                    .addComponent(mainPanel, javax.swing.GroupLayout.PREFERRED_SIZE, 421, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGap(0, 0, Short.MAX_VALUE)))
         );
 
         layout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {cancelButton, okButton});
@@ -220,8 +187,8 @@ public class ArduinoConnection extends javax.swing.JDialog {
                 .addContainerGap())
             .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addGroup(layout.createSequentialGroup()
-                    .addComponent(mainPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGap(0, 53, Short.MAX_VALUE)))
+                    .addComponent(mainPanel, javax.swing.GroupLayout.PREFERRED_SIZE, 257, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGap(0, 47, Short.MAX_VALUE)))
         );
 
         getRootPane().setDefaultButton(okButton);
@@ -245,10 +212,9 @@ public class ArduinoConnection extends javax.swing.JDialog {
     }//GEN-LAST:event_closeDialog
     
     private void doClose(int retStatus) {
-        if(myArduino.openConnection() && isConnected){
-          
-        }
-        comPort.removeDataListener();        
+        if(isConnected){
+            comPort.removeDataListener();           
+        }       
         returnStatus = retStatus;
         setVisible(false);
         dispose();
@@ -307,30 +273,37 @@ public class ArduinoConnection extends javax.swing.JDialog {
                 JOptionPane.showMessageDialog(null, "Connection failed", "Warning", JOptionPane.WARNING_MESSAGE); 
             }
             else{
-                Thread.sleep(1500);
-                String hi = "H";
-                myArduino.serialWrite(hi);   
-                sendLabel.setText("You said 'Hi' at "+port+"...");
-                try {
-                    while (!isConnected){
-                        if(comPort.bytesAvailable() > 0){
-                            Thread.sleep(10);
-                            String show = myArduino.serialRead();
-                            receiveLabel.setText(port+" responded with '"+show+"'..."); 
-                            isConnected = true;
-                            textLabel.setForeground(Color.blue);
-                            textLabel.setText("Connection with arduino established");
+                textLabel.setText("Connection in progress. Please wait...");  
+                Thread thread = new Thread(){
+                    @Override
+                    public void run(){
+                        String hi = "H"; 
+                        sendLabel.setText("You said 'Hi' at "+port+"...");
+                        try {
+                            Thread.sleep(1500);
+                        } catch (InterruptedException ex) {
+                            Logger.getLogger(ArduinoConnection.class.getName()).log(Level.SEVERE, null, ex);
                         }
+                        myArduino.serialWrite(hi);  
+                        try {
+                            while (!isConnected){
+                                if(comPort.bytesAvailable() > 0){
+                                    Thread.sleep(10);
+                                    String show = myArduino.serialRead();
+                                    receiveLabel.setText(port+" responded with '"+show+"'..."); 
+                                    p.setVisible(false);
+                                    isConnected = true;
+                                    textLabel.setForeground(Color.blue);
+                                    textLabel.setText("Connection with arduino established");
+                                }
+                            }
+                        } catch (Exception e) { e.printStackTrace(); }
                     }
-                } catch (Exception e) { e.printStackTrace(); }
-        //System.out.println("Read " + i + ": " + s + " bytes.");
+                };
+                thread.start();             
             }
         }
     } 
-    /* When connect button is pressed, try to communicate with arduino via selected port*/
-    private void connectActionPerformed(java.awt.event.ActionEvent evt){
- 
-    }
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton cancelButton;
     private javax.swing.JPanel mainPanel;

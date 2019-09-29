@@ -61,7 +61,7 @@ public class GraphWorker extends SwingWorker<String, String>{
                         channel = string;
                         result = new String(byteBuffer);
                         mA = Double.parseDouble(result);
-                        mA = (mA*5.08)/900.5;  
+                        mA = (mA*5.08)/900.5;       // ((dataIn*VOLTarduino)/4095)/Rsense 
                         time += dT; 
                         if(channel.equals("A")){ 
                            seriesA.add(time, mA);
@@ -88,6 +88,7 @@ public class GraphWorker extends SwingWorker<String, String>{
     /* Μέθοδος επικοινωνίας με το Thread. Εδώ φτάνουν τα μυνήματα από τη μέθοδο publish */
     @Override
     protected void process(List<String> chunks){
+        // This is a delay routine so that mA text is clear
         counter++;
         if(counter >= 21)
             counter = 0;

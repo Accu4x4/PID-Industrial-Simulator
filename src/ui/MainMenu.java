@@ -8,7 +8,10 @@ import com.fazecast.jSerialComm.SerialPort;
 import communication.GraphWorker;
 import graph.TimeGraph;
 import java.awt.CardLayout;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import javax.swing.ImageIcon;
+import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 /**
  *
@@ -408,6 +411,14 @@ public class MainMenu extends javax.swing.JFrame {
     private void setHardwareActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_setHardwareActionPerformed
         HardwareSettings hs = new HardwareSettings();
         hs.setLocationRelativeTo(null);
+        // WindowListener to close only hs JFrame!
+        hs.addWindowListener(new WindowAdapter() 
+        {
+            public void windowClosing(WindowEvent we) 
+            {
+                hs.setDefaultCloseOperation(2); //2=dispose_on_close (X button)
+            }
+        });        
         hs.setVisible(true);
     }//GEN-LAST:event_setHardwareActionPerformed
    

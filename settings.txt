@@ -1,0 +1,6 @@
+1.channel A max mA out:20.4
+2.channel B max mA out:20.4
+3.channel A Rsense:220
+4.channel B Rsense:220
+5.arduino Vin 5V:5.08
+6.converter max value:4095

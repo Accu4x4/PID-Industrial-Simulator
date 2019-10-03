@@ -20,6 +20,7 @@ import org.jfree.data.xy.XYSeries;
  */
 public class GraphWorker extends SwingWorker<String, String>{
     
+    private LocalSettings lc = new LocalSettings();
     private final TimeGraph graph;
     private XYSeries seriesA, seriesB;    
     private final Arduino myArduino;
@@ -61,13 +62,14 @@ public class GraphWorker extends SwingWorker<String, String>{
                         channel = string;
                         result = new String(byteBuffer);
                         mA = Double.parseDouble(result);
-                        mA = (mA*5.08)/900.5;       // ((dataIn*VOLTarduino)/4095)/Rsense 
                         time += dT; 
                         if(channel.equals("A")){ 
+                           mA = (mA*lc.getArduino_Vin_5V())/(lc.getConverter_max_Value()*(lc.getChannel_A_Rsense())*0.001);       // ((dataIn*VOLTarduino)/4095)/Rsense*0.001  
                            seriesA.add(time, mA);
                            publish(Double.toString(mA)+"A");
                         }
                         else{
+                           mA = (mA*lc.getArduino_Vin_5V())/(lc.getConverter_max_Value()*(lc.getChannel_B_Rsense())*0.001);       // ((dataIn*VOLTarduino)/4095)/Rsense*0.001  
                            seriesB.add(time, mA); 
                            publish(Double.toString(mA)+"B");                           
                         }

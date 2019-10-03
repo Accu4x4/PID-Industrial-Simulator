@@ -6,12 +6,12 @@ package ui;
 import arduino.*;
 import com.fazecast.jSerialComm.SerialPort;
 import communication.GraphWorker;
+import communication.LocalSettings;
 import graph.TimeGraph;
 import java.awt.CardLayout;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import javax.swing.ImageIcon;
-import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 /**
  *
@@ -19,6 +19,7 @@ import javax.swing.JOptionPane;
  */
 public class MainMenu extends javax.swing.JFrame {
 
+    private LocalSettings lc = new LocalSettings();
     private Arduino myArduino;
     private SerialPort comPort;    
     private final TimeGraph graph;
@@ -121,11 +122,6 @@ public class MainMenu extends javax.swing.JFrame {
 
         mAWriteTextB.setText(bundle.getString("MainMenu.mAWriteTextB.text")); // NOI18N
         mAWriteTextB.setBorder(javax.swing.BorderFactory.createEtchedBorder());
-        mAWriteTextB.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                mAWriteTextBActionPerformed(evt);
-            }
-        });
         mAWriteTextB.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyTyped(java.awt.event.KeyEvent evt) {
                 mAWriteTextBKeyTyped(evt);
@@ -378,7 +374,7 @@ public class MainMenu extends javax.swing.JFrame {
         String text = mAWriteTextA.getText();
         if(!text.equals("")){
             Double mA = Double.parseDouble(text);
-            mA = (mA*4095)/20.40;
+            mA = (mA*(lc.getConverter_max_Value()))/(lc.getChannel_A_max_mA_out());
             int sendData = mA.intValue();
             text = "MA"+Integer.toString(sendData);
             byte[] bytes = text.getBytes();
@@ -395,7 +391,7 @@ public class MainMenu extends javax.swing.JFrame {
         String text = mAWriteTextB.getText();
         if(!text.equals("")){
             Double mA = Double.parseDouble(text);
-            mA = (mA*4095)/21.28;
+            mA = (mA*(lc.getConverter_max_Value()))/(lc.getChannel_B_max_mA_out());
             int sendData = mA.intValue();
             text = "MB"+Integer.toString(sendData);
             byte[] bytes = text.getBytes();
@@ -404,16 +400,13 @@ public class MainMenu extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_executeButtonBActionPerformed
 
-    private void mAWriteTextBActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mAWriteTextBActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_mAWriteTextBActionPerformed
-
     private void setHardwareActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_setHardwareActionPerformed
         HardwareSettings hs = new HardwareSettings();
         hs.setLocationRelativeTo(null);
         // WindowListener to close only hs JFrame!
         hs.addWindowListener(new WindowAdapter() 
         {
+            @Override
             public void windowClosing(WindowEvent we) 
             {
                 hs.setDefaultCloseOperation(2); //2=dispose_on_close (X button)

@@ -7,6 +7,7 @@ import communication.LocalSettings;
 import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.JOptionPane;
 
 
 /**
@@ -15,24 +16,37 @@ import java.util.logging.Logger;
  */
 public class HardwareSettings extends javax.swing.JFrame {
 
+    private LocalSettings lc = new LocalSettings();
+    private float max_ma_out_cha;
+    private float max_ma_out_chb;
+    private float rsense_cha;
+    private float rsense_chb;
+    private float arduino_vin;
+    private float converter_value;
     /**
      * Creates new form HardwareSettings
      */
     public HardwareSettings() {
         this.setResizable(false);
         initComponents();
-        LocalSettings lc = new LocalSettings();
         try {
             lc.getSettings();
         } catch (IOException ex) {
             Logger.getLogger(HardwareSettings.class.getName()).log(Level.SEVERE, null, ex);
         }
-        max_ma_out_cha_textfield.setText(Float.toString(lc.getChannel_A_max_mA_out()));
-        max_ma_out_chb_textfield.setText(Float.toString(lc.getChannel_B_max_mA_out()));
-        rsense_cha_textfield.setText(Float.toString(lc.getChannel_A_Rsense()));
-        rsense_chb_textfield.setText(Float.toString(lc.getChannel_B_Rsense()));
-        arduino_vin_5v_textfield.setText(Float.toString(lc.getArduino_Vin_5V()));
-        converter_value_textfield.setText(Float.toString(lc.getConverter_max_Value()));
+        // Save stored values from settings file to class fields
+        max_ma_out_cha = lc.getChannel_A_max_mA_out();
+        max_ma_out_chb = lc.getChannel_B_max_mA_out();
+        rsense_cha = lc.getChannel_A_Rsense();
+        rsense_chb = lc.getChannel_B_Rsense();
+        arduino_vin = lc.getArduino_Vin_5V();
+        converter_value = lc.getConverter_max_Value();
+        max_ma_out_cha_textfield.setText(Float.toString(this.max_ma_out_cha));
+        max_ma_out_chb_textfield.setText(Float.toString(this.max_ma_out_chb));
+        rsense_cha_textfield.setText(Float.toString(this.rsense_cha));
+        rsense_chb_textfield.setText(Float.toString(this.rsense_chb));
+        arduino_vin_5v_textfield.setText(Float.toString(this.arduino_vin));
+        converter_value_textfield.setText(Float.toString(this.converter_value));
     }
 
     /**
@@ -60,8 +74,8 @@ public class HardwareSettings extends javax.swing.JFrame {
         max_ma_out_chb_label = new javax.swing.JLabel();
         rsense_chb_label = new javax.swing.JLabel();
         jLabel1 = new javax.swing.JLabel();
-        jButton1 = new javax.swing.JButton();
-        jButton2 = new javax.swing.JButton();
+        cancel = new javax.swing.JButton();
+        save = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -71,9 +85,27 @@ public class HardwareSettings extends javax.swing.JFrame {
         jPanel2.setBackground(new java.awt.Color(204, 204, 204));
         jPanel2.setBorder(javax.swing.BorderFactory.createTitledBorder("Channel 1"));
 
-        max_ma_out_cha_textfield.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                max_ma_out_cha_textfieldActionPerformed(evt);
+        max_ma_out_cha_textfield.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                max_ma_out_cha_textfieldKeyTyped(evt);
+            }
+        });
+
+        rsense_cha_textfield.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                rsense_cha_textfieldKeyTyped(evt);
+            }
+        });
+
+        converter_value_textfield.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                converter_value_textfieldKeyTyped(evt);
+            }
+        });
+
+        arduino_vin_5v_textfield.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                arduino_vin_5v_textfieldKeyTyped(evt);
             }
         });
 
@@ -129,6 +161,18 @@ public class HardwareSettings extends javax.swing.JFrame {
         jPanel3.setBackground(new java.awt.Color(204, 204, 204));
         jPanel3.setBorder(javax.swing.BorderFactory.createTitledBorder("Channel 2"));
 
+        max_ma_out_chb_textfield.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                max_ma_out_chb_textfieldKeyTyped(evt);
+            }
+        });
+
+        rsense_chb_textfield.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                rsense_chb_textfieldKeyTyped(evt);
+            }
+        });
+
         max_ma_out_chb_label.setText("Maximum mA output (20.00-21.40)");
 
         rsense_chb_label.setText("Resistense actual value (Rsense)");
@@ -167,14 +211,19 @@ public class HardwareSettings extends javax.swing.JFrame {
         jLabel1.setFont(new java.awt.Font("Dialog", 3, 12)); // NOI18N
         jLabel1.setText("Changing these values will affect the actual input and output of the system");
 
-        jButton1.setText("cancel");
-        jButton1.addActionListener(new java.awt.event.ActionListener() {
+        cancel.setText("cancel");
+        cancel.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton1ActionPerformed(evt);
+                cancelActionPerformed(evt);
             }
         });
 
-        jButton2.setText("save");
+        save.setText("save");
+        save.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                saveActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -188,9 +237,9 @@ public class HardwareSettings extends javax.swing.JFrame {
                     .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                         .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
                             .addContainerGap()
-                            .addComponent(jButton1)
+                            .addComponent(cancel)
                             .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                            .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 74, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(save, javax.swing.GroupLayout.PREFERRED_SIZE, 74, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addGroup(jPanel1Layout.createSequentialGroup()
                             .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addGap(18, 18, 18)
@@ -208,8 +257,8 @@ public class HardwareSettings extends javax.swing.JFrame {
                     .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jButton1)
-                    .addComponent(jButton2))
+                    .addComponent(cancel)
+                    .addComponent(save))
                 .addGap(7, 7, 7))
         );
 
@@ -226,15 +275,70 @@ public class HardwareSettings extends javax.swing.JFrame {
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
-
-    private void max_ma_out_cha_textfieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_max_ma_out_cha_textfieldActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_max_ma_out_cha_textfieldActionPerformed
-
-    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+    // Action when cancel button is pressed
+    private void cancelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cancelActionPerformed
         this.dispose();
-    }//GEN-LAST:event_jButton1ActionPerformed
+    }//GEN-LAST:event_cancelActionPerformed
+    // Action when save button is pressed
+    private void saveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveActionPerformed
+        float[] temp = new float[6];
+        temp[0] = Float.parseFloat(max_ma_out_cha_textfield.getText());
+        temp[1] = Float.parseFloat(max_ma_out_chb_textfield.getText());
+        temp[2] = Float.parseFloat(rsense_cha_textfield.getText());
+        temp[3] = Float.parseFloat(rsense_chb_textfield.getText());
+        temp[4] = Float.parseFloat(arduino_vin_5v_textfield.getText());
+        temp[5] =  Float.parseFloat(converter_value_textfield.getText());
+        if(temp[0] < 20 || temp[0] > 21.4)
+            JOptionPane.showMessageDialog(null, "Channel 1 maximum mA output value is not correct", "Error", JOptionPane.ERROR_MESSAGE);
+        else if(temp[1] < 20 || temp[1] > 21.4)
+            JOptionPane.showMessageDialog(null, "Channel 2 maximum mA output value is not correct", "Error", JOptionPane.ERROR_MESSAGE);
+        else
+            saveSettings(temp);
+    }//GEN-LAST:event_saveActionPerformed
+    
+    /* If conditions in textfields are ok, then save the values */
+    private void saveSettings(float[] temp){
+        try {
+                lc.saveSettings(temp[0], temp[1], temp[2], temp[3], temp[4], temp[5]);
+                this.dispose();                    
+            } catch (IOException ex) {
+                Logger.getLogger(HardwareSettings.class.getName()).log(Level.SEVERE, null, ex);
+            }
+}
+    /* Method to recognize only arithmetic characters when a key is hit into textfields */
+    private void max_ma_out_cha_textfieldKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_max_ma_out_cha_textfieldKeyTyped
+        textKeyTyped(evt);
+    }//GEN-LAST:event_max_ma_out_cha_textfieldKeyTyped
 
+    private void max_ma_out_chb_textfieldKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_max_ma_out_chb_textfieldKeyTyped
+        textKeyTyped(evt);
+    }//GEN-LAST:event_max_ma_out_chb_textfieldKeyTyped
+
+    private void rsense_cha_textfieldKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_rsense_cha_textfieldKeyTyped
+        textKeyTyped(evt);
+    }//GEN-LAST:event_rsense_cha_textfieldKeyTyped
+
+    private void rsense_chb_textfieldKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_rsense_chb_textfieldKeyTyped
+        textKeyTyped(evt);
+    }//GEN-LAST:event_rsense_chb_textfieldKeyTyped
+
+    private void arduino_vin_5v_textfieldKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_arduino_vin_5v_textfieldKeyTyped
+        textKeyTyped(evt);
+    }//GEN-LAST:event_arduino_vin_5v_textfieldKeyTyped
+
+    private void converter_value_textfieldKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_converter_value_textfieldKeyTyped
+        textKeyTyped(evt);
+    }//GEN-LAST:event_converter_value_textfieldKeyTyped
+
+    /* From textKeyTyped Event common functions */
+    private void textKeyTyped(java.awt.event.KeyEvent evt){
+        char c=evt.getKeyChar();
+        if((Character.isAlphabetic(c))){
+            getToolkit().beep();
+            evt.consume();
+        }        
+    }
+    
     /**
      * @param args the command line arguments
      */
@@ -275,10 +379,9 @@ public class HardwareSettings extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel arduino_vin_5v_label;
     private javax.swing.JTextField arduino_vin_5v_textfield;
+    private javax.swing.JButton cancel;
     private javax.swing.JLabel converter_value_label;
     private javax.swing.JTextField converter_value_textfield;
-    private javax.swing.JButton jButton1;
-    private javax.swing.JButton jButton2;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
@@ -291,5 +394,6 @@ public class HardwareSettings extends javax.swing.JFrame {
     private javax.swing.JTextField rsense_cha_textfield;
     private javax.swing.JLabel rsense_chb_label;
     private javax.swing.JTextField rsense_chb_textfield;
+    private javax.swing.JButton save;
     // End of variables declaration//GEN-END:variables
 }

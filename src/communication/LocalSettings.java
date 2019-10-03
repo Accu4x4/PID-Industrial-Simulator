@@ -27,6 +27,7 @@ public class LocalSettings {
         if(file.exists())
             System.out.println("exists");
         else{
+            // Write into settings.txt the default values
             try (Writer writer = new BufferedWriter(new FileWriter(file))) {
                 String contents = "1.channel A max mA out:" + 20.40 + 
                     System.getProperty("line.separator") + "2.channel B max mA out:" + 20.40 +
@@ -36,6 +37,8 @@ public class LocalSettings {
                     System.getProperty("line.separator") + "6.converter max value:" + 4095;
 
                 writer.write(contents);
+                writer.flush();
+                writer.close();
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -61,6 +64,25 @@ public class LocalSettings {
         this.setChannel_B_Rsense(values[3]);
         this.setArduino_Vin_5V(values[4]);
         this.setConverter_max_Value(values[5]);
+        br.close();
+    }
+    
+    public void saveSettings (float chAmA, float chBmA, float chAR, float chBR, float arduino5v, float converterValue) throws FileNotFoundException, IOException{
+        File file = new File(filePath);
+        try (Writer writer = new BufferedWriter(new FileWriter(file))) {
+            String contents = "1.channel A max mA out:" + chAmA + 
+                System.getProperty("line.separator") + "2.channel B max mA out:" + chBmA +
+                System.getProperty("line.separator") + "3.channel A Rsense:" + chAR +
+                System.getProperty("line.separator") + "4.channel B Rsense:" + chBR + 
+                System.getProperty("line.separator") + "5.arduino Vin 5V:" + arduino5v + 
+                System.getProperty("line.separator") + "6.converter max value:" + converterValue;
+
+                writer.write(contents);
+                writer.flush();
+                writer.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
     }
 
     // Getters and Setters

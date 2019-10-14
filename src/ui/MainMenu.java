@@ -6,11 +6,15 @@ package ui;
 import arduino.*;
 import com.fazecast.jSerialComm.SerialPort;
 import communication.GraphWorker;
+import communication.GraphWorker2;
 import communication.LocalSettings;
 import graph.TimeGraph;
 import java.awt.CardLayout;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
 /**
@@ -22,17 +26,19 @@ public class MainMenu extends javax.swing.JFrame {
     private LocalSettings lc = new LocalSettings();
     private Arduino myArduino;
     private SerialPort comPort;    
-    private final TimeGraph graph;
+    private TimeGraph graph;
     private GraphWorker gw;
+    private GraphWorker2 gw2;
     private boolean isConnected = false;
     
     /**
      * Creates new form MainMenu
      */
-    public MainMenu() { 
+    public MainMenu() throws IOException { 
         initComponents();
-        graph = new TimeGraph("Time Plot");
+        graph = new TimeGraph("Time Plot", "time (seconds)", "mA");
         graphPanel.add(graph.getGraphPanel());
+        lc.getSettings();   // Initialise the values to be used later
     }
 
     /**
@@ -63,6 +69,21 @@ public class MainMenu extends javax.swing.JFrame {
         channelTwoIn = new javax.swing.JLabel();
         jLabel4 = new javax.swing.JLabel();
         jLabel5 = new javax.swing.JLabel();
+        modeTwoControlPanel = new javax.swing.JPanel();
+        PVLabel = new javax.swing.JLabel();
+        PVInputLabel = new javax.swing.JLabel();
+        SPLabel = new javax.swing.JLabel();
+        SPText = new javax.swing.JTextField();
+        jSeparator3 = new javax.swing.JSeparator();
+        PIDLabel = new javax.swing.JLabel();
+        KpLabel = new javax.swing.JLabel();
+        KpText = new javax.swing.JTextField();
+        KiLabel = new javax.swing.JLabel();
+        KiText = new javax.swing.JTextField();
+        KdLabel = new javax.swing.JLabel();
+        KdText = new javax.swing.JTextField();
+        SetButton = new javax.swing.JButton();
+        UpdateButton = new javax.swing.JButton();
         menuBar = new javax.swing.JMenuBar();
         setupMenu = new javax.swing.JMenu();
         connectionMenu = new javax.swing.JMenuItem();
@@ -231,6 +252,155 @@ public class MainMenu extends javax.swing.JFrame {
 
         controlPanel.add(modeOneControlPanel, "modeOneControlPanel");
 
+        PVLabel.setText(bundle.getString("MainMenu.PVLabel.text")); // NOI18N
+
+        PVInputLabel.setBackground(new java.awt.Color(255, 255, 255));
+        PVInputLabel.setForeground(new java.awt.Color(255, 51, 51));
+        PVInputLabel.setText(bundle.getString("MainMenu.PVInputLabel.text")); // NOI18N
+        PVInputLabel.setBorder(javax.swing.BorderFactory.createEtchedBorder());
+        PVInputLabel.setOpaque(true);
+
+        SPLabel.setText(bundle.getString("MainMenu.SPLabel.text")); // NOI18N
+
+        SPText.setForeground(new java.awt.Color(0, 153, 51));
+        SPText.setText(bundle.getString("MainMenu.SPText.text")); // NOI18N
+        SPText.setToolTipText(bundle.getString("MainMenu.SPText.toolTipText")); // NOI18N
+        SPText.setBorder(javax.swing.BorderFactory.createEtchedBorder());
+        SPText.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                SPTextKeyTyped(evt);
+            }
+        });
+
+        PIDLabel.setFont(new java.awt.Font("Dialog", 3, 12)); // NOI18N
+        PIDLabel.setText(bundle.getString("MainMenu.PIDLabel.text")); // NOI18N
+
+        KpLabel.setText(bundle.getString("MainMenu.KpLabel.text")); // NOI18N
+        KpLabel.setToolTipText(bundle.getString("MainMenu.KpLabel.toolTipText")); // NOI18N
+
+        KpText.setForeground(new java.awt.Color(0, 0, 0));
+        KpText.setText(bundle.getString("MainMenu.KpText.text")); // NOI18N
+        KpText.setToolTipText(bundle.getString("MainMenu.KpText.toolTipText")); // NOI18N
+        KpText.setBorder(javax.swing.BorderFactory.createEtchedBorder());
+        KpText.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                KpTextKeyTyped(evt);
+            }
+        });
+
+        KiLabel.setText(bundle.getString("MainMenu.KiLabel.text")); // NOI18N
+        KiLabel.setToolTipText(bundle.getString("MainMenu.KiLabel.toolTipText")); // NOI18N
+
+        KiText.setForeground(new java.awt.Color(0, 0, 0));
+        KiText.setText(bundle.getString("MainMenu.KiText.text")); // NOI18N
+        KiText.setToolTipText(bundle.getString("MainMenu.KiText.toolTipText")); // NOI18N
+        KiText.setBorder(javax.swing.BorderFactory.createEtchedBorder());
+        KiText.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                KiTextKeyTyped(evt);
+            }
+        });
+
+        KdLabel.setText(bundle.getString("MainMenu.KdLabel.text")); // NOI18N
+        KdLabel.setToolTipText(bundle.getString("MainMenu.KdLabel.toolTipText")); // NOI18N
+
+        KdText.setForeground(new java.awt.Color(0, 0, 0));
+        KdText.setText(bundle.getString("MainMenu.KdText.text")); // NOI18N
+        KdText.setToolTipText(bundle.getString("MainMenu.KdText.toolTipText")); // NOI18N
+        KdText.setBorder(javax.swing.BorderFactory.createEtchedBorder());
+        KdText.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                KdTextKeyTyped(evt);
+            }
+        });
+
+        SetButton.setText(bundle.getString("MainMenu.SetButton.text")); // NOI18N
+        SetButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                SetButtonActionPerformed(evt);
+            }
+        });
+
+        UpdateButton.setText(bundle.getString("MainMenu.UpdateButton.text")); // NOI18N
+        UpdateButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                UpdateButtonActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout modeTwoControlPanelLayout = new javax.swing.GroupLayout(modeTwoControlPanel);
+        modeTwoControlPanel.setLayout(modeTwoControlPanelLayout);
+        modeTwoControlPanelLayout.setHorizontalGroup(
+            modeTwoControlPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(modeTwoControlPanelLayout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(modeTwoControlPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jSeparator3)
+                    .addGroup(modeTwoControlPanelLayout.createSequentialGroup()
+                        .addGroup(modeTwoControlPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(PVLabel)
+                            .addComponent(PVInputLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(SPLabel)
+                            .addComponent(PIDLabel)
+                            .addGroup(modeTwoControlPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                                .addGroup(javax.swing.GroupLayout.Alignment.LEADING, modeTwoControlPanelLayout.createSequentialGroup()
+                                    .addComponent(KdLabel)
+                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                    .addComponent(KdText, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addGroup(javax.swing.GroupLayout.Alignment.LEADING, modeTwoControlPanelLayout.createSequentialGroup()
+                                    .addComponent(KiLabel)
+                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                    .addComponent(KiText, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addGroup(javax.swing.GroupLayout.Alignment.LEADING, modeTwoControlPanelLayout.createSequentialGroup()
+                                    .addComponent(KpLabel)
+                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                    .addComponent(KpText, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                        .addGap(0, 20, Short.MAX_VALUE))
+                    .addGroup(modeTwoControlPanelLayout.createSequentialGroup()
+                        .addComponent(SPText, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(SetButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(UpdateButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap())
+        );
+        modeTwoControlPanelLayout.setVerticalGroup(
+            modeTwoControlPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(modeTwoControlPanelLayout.createSequentialGroup()
+                .addGap(25, 25, 25)
+                .addComponent(PVLabel)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(PVInputLabel)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(SPLabel)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(modeTwoControlPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(SPText, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(SetButton, javax.swing.GroupLayout.PREFERRED_SIZE, 26, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jSeparator3, javax.swing.GroupLayout.PREFERRED_SIZE, 10, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(PIDLabel)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(modeTwoControlPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(KpLabel)
+                    .addComponent(KpText, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(modeTwoControlPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(KiLabel)
+                    .addComponent(KiText, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(modeTwoControlPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(KdLabel)
+                    .addComponent(KdText, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(UpdateButton, javax.swing.GroupLayout.PREFERRED_SIZE, 26, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(85, Short.MAX_VALUE))
+        );
+
+        controlPanel.add(modeTwoControlPanel, "modeTwoControlPanel");
+        modeTwoControlPanel.getAccessibleContext().setAccessibleName(bundle.getString("MainMenu.modeTwoControlPanel.AccessibleContext.accessibleName")); // NOI18N
+        modeTwoControlPanel.getAccessibleContext().setAccessibleDescription(bundle.getString("MainMenu.modeTwoControlPanel.AccessibleContext.accessibleDescription")); // NOI18N
+
         javax.swing.GroupLayout mainBackgroundPanelLayout = new javax.swing.GroupLayout(mainBackgroundPanel);
         mainBackgroundPanel.setLayout(mainBackgroundPanelLayout);
         mainBackgroundPanelLayout.setHorizontalGroup(
@@ -357,9 +527,32 @@ public class MainMenu extends javax.swing.JFrame {
                 if(mode.equals("mode1")){
                     CardLayout card = (CardLayout) controlPanel.getLayout();
                     card.show(controlPanel, "modeOneControlPanel");
-                    gw = new GraphWorker(myArduino, graph, channelOneIn, channelTwoIn);
+                    try {
+                        gw = new GraphWorker(myArduino, graph, channelOneIn, channelTwoIn);
+                    } catch (IOException ex) {
+                        Logger.getLogger(MainMenu.class.getName()).log(Level.SEVERE, null, ex);
+                    }
                     gw.execute();
-                }                   
+                }
+                if(mode.equals("mode2")){
+                    //gw.cancel(true);
+                    graphPanel.removeAll();
+                    graphPanel.updateUI();
+                    graph = new TimeGraph("Time Plot", "time (seconds)", "volts");
+                    graphPanel.add(graph.getGraphPanel());
+                    CardLayout card = (CardLayout) controlPanel.getLayout();
+                    card.show(controlPanel, "modeTwoControlPanel");                  
+                    try {
+                        gw2 = new GraphWorker2(myArduino, graph, PVInputLabel);
+                    } catch (IOException ex) {
+                        Logger.getLogger(MainMenu.class.getName()).log(Level.SEVERE, null, ex);
+                    }                   
+                    gw2.execute();
+                    // Request arduino to enter mode 2
+                    String text = "X";  // see arduino code
+                    byte[] bytes = text.getBytes();
+                    comPort.writeBytes(bytes, bytes.length);
+                } 
             }
         }
         else
@@ -396,7 +589,6 @@ public class MainMenu extends javax.swing.JFrame {
             text = "MB"+Integer.toString(sendData);
             byte[] bytes = text.getBytes();
             comPort.writeBytes(bytes, bytes.length);
-            System.out.println(text);
         }
     }//GEN-LAST:event_executeButtonBActionPerformed
 
@@ -414,6 +606,43 @@ public class MainMenu extends javax.swing.JFrame {
         });        
         hs.setVisible(true);
     }//GEN-LAST:event_setHardwareActionPerformed
+
+    private void SPTextKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_SPTextKeyTyped
+        // TODO add your handling code here:
+    }//GEN-LAST:event_SPTextKeyTyped
+
+    private void KpTextKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_KpTextKeyTyped
+        // TODO add your handling code here:
+    }//GEN-LAST:event_KpTextKeyTyped
+
+    private void KiTextKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_KiTextKeyTyped
+        // TODO add your handling code here:
+    }//GEN-LAST:event_KiTextKeyTyped
+
+    private void KdTextKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_KdTextKeyTyped
+        // TODO add your handling code here:
+    }//GEN-LAST:event_KdTextKeyTyped
+
+    private void SetButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_SetButtonActionPerformed
+        String text = SPText.getText();
+        if(!text.equals("")){
+            Double volts = Double.parseDouble(text);
+            text = "S"+volts;
+            byte[] bytes = text.getBytes();
+            comPort.writeBytes(bytes, bytes.length);
+        }
+    }//GEN-LAST:event_SetButtonActionPerformed
+
+    private void UpdateButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_UpdateButtonActionPerformed
+        String kp = KpText.getText();
+        kp = "P"+kp;
+        byte[] bytes = kp.getBytes();
+        comPort.writeBytes(bytes, bytes.length);  
+        String ki = KiText.getText();        
+        ki = "I"+ki;
+        bytes = ki.getBytes();
+        comPort.writeBytes(bytes, bytes.length);
+    }//GEN-LAST:event_UpdateButtonActionPerformed
    
     public void setArduino(Arduino arduino){
         myArduino = arduino;
@@ -429,6 +658,19 @@ public class MainMenu extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JLabel KdLabel;
+    private javax.swing.JTextField KdText;
+    private javax.swing.JLabel KiLabel;
+    private javax.swing.JTextField KiText;
+    private javax.swing.JLabel KpLabel;
+    private javax.swing.JTextField KpText;
+    private javax.swing.JLabel PIDLabel;
+    private javax.swing.JLabel PVInputLabel;
+    private javax.swing.JLabel PVLabel;
+    private javax.swing.JLabel SPLabel;
+    private javax.swing.JTextField SPText;
+    private javax.swing.JButton SetButton;
+    private javax.swing.JButton UpdateButton;
     private javax.swing.JMenu aboutMenu;
     private javax.swing.JLabel channelOneIn;
     private javax.swing.JLabel channelOneLabel;
@@ -447,6 +689,7 @@ public class MainMenu extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel5;
     private javax.swing.JPopupMenu.Separator jSeparator1;
     private javax.swing.JSeparator jSeparator2;
+    private javax.swing.JSeparator jSeparator3;
     private javax.swing.JTextField mAWriteTextA;
     private javax.swing.JTextField mAWriteTextB;
     private javax.swing.JPanel mainBackgroundPanel;
@@ -454,6 +697,7 @@ public class MainMenu extends javax.swing.JFrame {
     private javax.swing.JMenuBar menuBar;
     private javax.swing.JPanel modeOneControlPanel;
     private javax.swing.JMenuItem modeSelectionMenu;
+    private javax.swing.JPanel modeTwoControlPanel;
     private javax.swing.JMenuItem setHardware;
     private javax.swing.JMenu settingsMenu;
     private javax.swing.JMenu setupMenu;

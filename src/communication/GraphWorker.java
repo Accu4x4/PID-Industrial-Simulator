@@ -6,6 +6,7 @@ package communication;
 import arduino.Arduino;
 import com.fazecast.jSerialComm.SerialPort;
 import graph.TimeGraph;
+import java.io.IOException;
 import java.util.List;
 import javax.swing.JLabel;
 import javax.swing.SwingWorker;
@@ -31,13 +32,14 @@ public class GraphWorker extends SwingWorker<String, String>{
     private final double dT = 0.01;     // deltaT sample rate (defined by arduino)
     private String channel;
     
-    public GraphWorker(Arduino arduino, TimeGraph graph, JLabel jLabelA, JLabel jLabelB){
+    public GraphWorker(Arduino arduino, TimeGraph graph, JLabel jLabelA, JLabel jLabelB) throws IOException{
         time = 0;
         this.myArduino = arduino;
         this.graph = graph;
         this.mAValueA = jLabelA;
         this.mAValueB = jLabelB;
         comPort = myArduino.getSerialPort();
+        lc.getSettings();
     }
     
     @Override
@@ -49,11 +51,10 @@ public class GraphWorker extends SwingWorker<String, String>{
         byte[] readSerial = {0};
         String string, result;
         //comPort.setFlowControl(SerialPort.FLOW_CONTROL_CTS_ENABLED);
-        System.out.println("FlowControlSettings: "+comPort.getFlowControlSettings());
         seriesA = this.graph.getSeriesA();
         seriesB = this.graph.getSeriesB();
         try {
-            while (true){
+            while (!isCancelled()){
                 if(comPort.bytesAvailable() > 0){
                     //Thread.sleep(10);
                     num = comPort.readBytes(readSerial, 1);
@@ -64,7 +65,7 @@ public class GraphWorker extends SwingWorker<String, String>{
                         mA = Double.parseDouble(result);
                         time += dT; 
                         if(channel.equals("A")){ 
-                           mA = (mA*lc.getArduino_Vin_5V())/(lc.getConverter_max_Value()*(lc.getChannel_A_Rsense())*0.001);       // ((dataIn*VOLTarduino)/4095)/Rsense*0.001  
+                           mA = (mA*lc.getArduino_Vin_5V())/(lc.getConverter_max_Value()*(lc.getChannel_A_Rsense())*0.001);       // ((dataIn*VOLTarduino)/4095)/Rsense*0.001 
                            seriesA.add(time, mA);
                            publish(Double.toString(mA)+"A");
                         }

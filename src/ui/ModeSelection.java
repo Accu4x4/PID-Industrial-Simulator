@@ -96,6 +96,11 @@ public class ModeSelection extends javax.swing.JDialog {
         });
 
         modeTwo.setText("Mode 2: Use arduino as the PID controller");
+        modeTwo.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                modeTwoActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -168,6 +173,11 @@ public class ModeSelection extends javax.swing.JDialog {
         if(modeOne.isSelected())
             selectedMode = "mode1";
     }//GEN-LAST:event_modeOneActionPerformed
+
+    private void modeTwoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_modeTwoActionPerformed
+        if(modeTwo.isSelected())
+            selectedMode = "mode2";
+    }//GEN-LAST:event_modeTwoActionPerformed
     
     private void doClose(int retStatus) {
         returnStatus = retStatus;

@@ -107,6 +107,9 @@
           <Properties>
             <Property name="text" type="java.lang.String" value="Mode 2: Use arduino as the PID controller"/>
           </Properties>
+          <Events>
+            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="modeTwoActionPerformed"/>
+          </Events>
         </Component>
       </SubComponents>
     </Container>

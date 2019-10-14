@@ -22,7 +22,7 @@ public class TimeGraph {
     private final ChartPanel graphPanel;        // Panel to add the graph
     private final XYSeries seriesA, seriesB;    // Series of data collection from arduino
 
-    public TimeGraph(String title){
+    public TimeGraph(String title, String Xlabel, String Ylabel){
         this.graphTitle = title;
         this.seriesA = new XYSeries("input A");
         this.seriesB = new XYSeries("input B");
@@ -30,7 +30,7 @@ public class TimeGraph {
         dataset.addSeries(seriesA);
         dataset.addSeries(seriesB);
         // Create the graph
-        JFreeChart chart = ChartFactory.createXYLineChart(graphTitle, "Time (seconds)", "mA", dataset);
+        JFreeChart chart = ChartFactory.createXYLineChart(graphTitle, Xlabel, Ylabel, dataset);
         this.graphPanel = new ChartPanel(chart);
         //graphPanel.setMaximumDrawHeight(40);
         //graphPanel.setMinimumDrawWidth(60);                
